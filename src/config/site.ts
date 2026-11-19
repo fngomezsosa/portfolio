@@ -17,7 +17,9 @@ export const site = {
 export const links = {
   email: 'fngomezsosa@gmail.com',
   linkedin: 'https://www.linkedin.com/in/federico-nicolas-gomez-421b14192',
-  github: 'https://github.com/fngomezsosa',
+  // GitHub: oculto por ahora. Reactivar cuando haya repos públicos
+  // (volver a sumarlo al footer y al JSON-LD `sameAs` en src/pages/index.astro).
+  // github: 'https://github.com/fngomezsosa',
   // Número del CV en formato internacional (Argentina, celular: 54 9 11 …).
   whatsapp: 'https://wa.me/5491134363005?text=' + encodeURIComponent('Hola Federico, vi tu portfolio y quería contactarte.'),
   gptech: 'https://www.gp-tech.com.ar/',

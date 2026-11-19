@@ -3,7 +3,6 @@ import AxeBuilder from '@axe-core/playwright';
 import { scrollThrough, isDesktop } from './helpers';
 
 const LINKEDIN = 'https://www.linkedin.com/in/federico-nicolas-gomez-421b14192';
-const GITHUB = 'https://github.com/fngomezsosa';
 const WHATSAPP = /^https:\/\/wa\.me\/5491134363005\?text=/;
 const GPTECH = 'https://www.gp-tech.com.ar/';
 
@@ -308,7 +307,8 @@ test.describe('Contacto y footer', () => {
     const footer = page.locator('footer');
     await expect(footer).toContainText('Desarrollador Backend Python | IA y agentes');
     await expect(footer.getByRole('link', { name: /^LinkedIn/ })).toHaveAttribute('href', LINKEDIN);
-    await expect(footer.getByRole('link', { name: /^GitHub/ })).toHaveAttribute('href', GITHUB);
+    // GitHub está oculto hasta que haya repos públicos.
+    await expect(page.locator('a[href*="github.com"]')).toHaveCount(0);
     await expect(footer.getByRole('link', { name: 'Email' })).toHaveAttribute('href', 'mailto:fngomezsosa@gmail.com');
     await expect(footer.getByRole('link', { name: /Co-founder de GP-Tech/ })).toHaveAttribute('href', GPTECH);
     await expect(footer).toContainText(`© ${new Date().getFullYear()}`);

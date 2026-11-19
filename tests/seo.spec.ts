@@ -28,6 +28,7 @@ test.describe('SEO y publicación', () => {
     const data = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent())!);
     expect(data['@type']).toBe('Person');
     expect(data.name).toBe('Federico Nicolás Gómez');
+    expect(data.sameAs).not.toContain('https://github.com/fngomezsosa');
   });
 
   test('robots.txt y sitemap', async ({ request }) => {

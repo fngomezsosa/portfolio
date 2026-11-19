@@ -2,7 +2,7 @@ import { Mail } from 'lucide-react';
 import { links, mailto, site } from '../../config/site';
 import { navigation } from '../../config/navigation';
 import type { ResponsiveImage } from '../../lib/images';
-import { GithubIcon, LinkedInIcon } from '../ui/Icons';
+import { LinkedInIcon } from '../ui/Icons';
 import { Logo } from '../ui/Logo';
 import styles from './Footer.module.css';
 
@@ -32,12 +32,6 @@ export function Footer({ gptechIcon, year }: { gptechIcon: ResponsiveImage; year
             <a href={links.linkedin} target="_blank" rel="noopener noreferrer">
               <LinkedInIcon size={22} />
               <span className="visually-hidden">LinkedIn (se abre en una pestaña nueva)</span>
-            </a>
-          </li>
-          <li>
-            <a href={links.github} target="_blank" rel="noopener noreferrer">
-              <GithubIcon size={22} />
-              <span className="visually-hidden">GitHub (se abre en una pestaña nueva)</span>
             </a>
           </li>
           <li>
