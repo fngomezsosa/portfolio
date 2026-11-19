@@ -1,0 +1,124 @@
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-top: var(--header-h);
+}
+
+/* Mobile: imagen arriba, como franja que se funde con el fondo. */
+.media {
+  position: relative;
+  height: clamp(15rem, 48vw, 24rem);
+  margin-bottom: -4rem;
+}
+
+.media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 62% 60%;
+}
+
+.media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgb(4 8 7 / 0.35) 0%, transparent 30%, rgb(4 8 7 / 0.6) 70%, var(--bg) 100%),
+    radial-gradient(60% 60% at 70% 60%, transparent, rgb(4 8 7 / 0.4));
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  padding-bottom: 4rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: rgb(4 8 7 / 0.65);
+  color: var(--accent);
+  font-size: 0.875rem;
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+}
+
+.title {
+  margin-top: 1rem;
+  font-size: clamp(3rem, 13vw, 6.25rem);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.title > span {
+  display: block;
+}
+
+.description {
+  max-width: 34rem;
+  margin-top: 1.25rem;
+  color: #d7e3dd;
+  font-size: clamp(1.0625rem, 2vw, 1.3rem);
+  line-height: 1.5;
+}
+
+.highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.75rem;
+  margin-block: 1.75rem 2.25rem;
+  font-weight: 600;
+  font-size: 0.975rem;
+}
+
+.highlights li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.highlightIcon {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgb(46 229 157 / 0.06);
+  color: var(--accent);
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    display: flex;
+    align-items: center;
+    min-height: min(100svh, 56rem);
+  }
+
+  /* Escritorio: imagen de fondo con cover y degradado oscuro a la izquierda. */
+  .media {
+    position: absolute;
+    inset: 0;
+    height: auto;
+    margin: 0;
+    z-index: -1;
+  }
+
+  .media img {
+    object-position: 70% 55%;
+  }
+
+  .media::after {
+    background:
+      linear-gradient(90deg, var(--bg) 0%, rgb(4 8 7 / 0.94) 28%, rgb(4 8 7 / 0.55) 50%, rgb(4 8 7 / 0.08) 72%),
+      linear-gradient(to bottom, rgb(4 8 7 / 0.5) 0%, transparent 22%, transparent 70%, var(--bg) 100%);
+  }
+
+  .content {
+    padding-block: 3rem 5rem;
+  }
+}

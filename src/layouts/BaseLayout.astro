@@ -1,0 +1,105 @@
+---
+/**
+ * Layout base: <head> (SEO, Open Graph, fuentes) y estructura común.
+ * Este frontmatter corre en el build, no en el navegador.
+ */
+import '../styles/global.css';
+import { Font } from 'astro:assets';
+import { site } from '../config/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Datos estructurados schema.org. */
+  jsonLd?: Record<string, unknown>;
+  noindex?: boolean;
+  /** Imagen a precargar (LCP), p. ej. el fondo del hero. */
+  preloadImage?: { srcSet: string; sizes: string };
+}
+
+const { title = site.seoTitle, description = site.seoDescription, jsonLd, noindex = false, preloadImage } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og.png', Astro.site);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#040807" />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name} · ${site.role}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <Font cssVariable="--font-jakarta" preload={[{ weight: 400 }, { weight: 800 }]} />
+    {preloadImage && <link rel="preload" as="image" imagesrcset={preloadImage.srcSet} imagesizes={preloadImage.sizes} fetchpriority="high" />}
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <slot />
+  </body>
+</html>
+
+<script>
+  /*
+   * Aparición al scrollear. Lo que ya está en pantalla se marca visible ANTES de
+   * activar el estado oculto, así no hay parpadeo.
+   */
+  const elements = document.querySelectorAll<HTMLElement>('[data-reveal]');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (elements.length && !reduce && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      },
+      { rootMargin: '0px 0px -8% 0px' },
+    );
+    for (const el of elements) {
+      if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('is-visible');
+      else observer.observe(el);
+    }
+    document.documentElement.classList.add('reveal-ready');
+  }
+</script>
+
+<style>
+  .skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -100px;
+    z-index: 200;
+    padding: 0.5rem 1rem;
+    background: var(--accent);
+    color: var(--on-accent);
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .skip-link:focus {
+    top: 1rem;
+  }
+</style>

@@ -1,0 +1,98 @@
+.card {
+  display: grid;
+  gap: 2rem;
+  padding: 2rem 1.5rem;
+  overflow: hidden;
+  border-color: var(--border-strong);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: -50% 40% 30% -20%;
+  background: radial-gradient(closest-side, var(--glow), transparent);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.main {
+  position: relative;
+  display: grid;
+  gap: 0.9rem;
+  align-content: center;
+}
+
+.title {
+  font-size: clamp(2.25rem, 6vw, 3.25rem);
+  font-weight: 800;
+}
+
+.text {
+  color: #d0dcd6;
+  font-size: 1.0625rem;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.whatsapp {
+  color: #25d366;
+}
+
+.email {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.gptech {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  align-content: center;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.gptechHead {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.gptechHead img {
+  width: 5.5rem;
+  height: auto;
+  filter: drop-shadow(0 0 16px rgb(26 110 239 / 0.5));
+}
+
+.gptechHead h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.gptechHead p,
+.gptechText {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.gptech > a {
+  justify-self: start;
+}
+
+@media (min-width: 900px) {
+  .card {
+    grid-template-columns: 1.2fr 1fr;
+    padding: 2.75rem 3rem;
+  }
+
+  .gptech {
+    padding: 0 0 0 3rem;
+    border-top: 0;
+    border-left: 1px solid var(--border);
+  }
+}

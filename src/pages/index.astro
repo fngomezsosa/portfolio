@@ -1,0 +1,76 @@
+---
+/**
+ * One page. Las secciones son componentes React que Astro renderiza a HTML en el build.
+ * Solo dos islands cargan JavaScript en el navegador:
+ *   - Header (client:load): menú hamburguesa y sección activa.
+ *   - TechCarousel (client:visible): se hidrata recién cuando el stack entra en pantalla.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/islands/Header';
+import TechCarousel from '../components/islands/TechCarousel';
+import { Hero, HERO_IMAGE_SIZES } from '../components/sections/Hero';
+import { About } from '../components/sections/About';
+import { Projects } from '../components/sections/Projects';
+import { Stack } from '../components/sections/Stack';
+import { Experience } from '../components/sections/Experience';
+import { Contact } from '../components/sections/Contact';
+import { Footer } from '../components/sections/Footer';
+import { optimize } from '../lib/images';
+import { links, site } from '../config/site';
+import { projects } from '../data/projects';
+
+import desk from '../assets/escritorio-mate.jpg';
+import photo from '../assets/federico-gomez.jpg';
+import tupropiaIcon from '../assets/logos/tupropia-icono.png';
+import tuagenciaIcon from '../assets/logos/tuagencia-icono.png';
+import gptechIcon from '../assets/logos/gptech-icono.png';
+
+// Imágenes optimizadas en el build (WebP, varios anchos para srcset).
+const heroImage = await optimize(desk, [640, 960, 1280, 1672]);
+const aboutPhoto = await optimize(photo, [320, 480, 660]);
+const gptechSmall = await optimize(gptechIcon, [96, 192]);
+const chatIcons = { tupropia: await optimize(tupropiaIcon, [48]), tuagencia: await optimize(tuagenciaIcon, [48]) };
+const projectImages = Object.fromEntries(
+  await Promise.all(
+    projects.map(async (p) => [
+      p.id,
+      {
+        logo: await optimize(p.logo, p.logoHasName ? [320, 480, 640] : [240, 360, 480]),
+        icon: chatIcons[p.id as keyof typeof chatIcons],
+      },
+    ]),
+  ),
+);
+
+const buildDate = new Date().toISOString();
+
+// schema.org/Person para buscadores.
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.fullName,
+  alternateName: site.name,
+  jobTitle: site.role,
+  url: Astro.site?.href,
+  email: `mailto:${links.email}`,
+  address: { '@type': 'PostalAddress', addressLocality: 'Buenos Aires', addressCountry: 'AR' },
+  sameAs: [links.linkedin, links.github],
+  worksFor: { '@type': 'Organization', name: 'GP-Tech', url: links.gptech },
+  knowsAbout: ['Python', 'Django', 'Django REST Framework', 'FastAPI', 'LLMs', 'AI Agents', 'RAG', 'pgvector', 'AWS'],
+};
+---
+
+<BaseLayout jsonLd={person} preloadImage={{ srcSet: heroImage.srcSet, sizes: HERO_IMAGE_SIZES }}>
+  <Header client:load />
+  <main id="contenido" tabindex="-1">
+    <Hero image={heroImage} />
+    <About photo={aboutPhoto} />
+    <Projects images={projectImages} />
+    <Stack>
+      <TechCarousel client:visible />
+    </Stack>
+    <Experience buildDate={buildDate} />
+    <Contact gptechIcon={gptechSmall} />
+  </main>
+  <Footer gptechIcon={gptechSmall} year={new Date().getFullYear()} />
+</BaseLayout>

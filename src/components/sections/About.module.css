@@ -1,0 +1,142 @@
+.section {
+  padding-top: 2rem;
+}
+
+.card {
+  display: grid;
+  gap: 2rem;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: auto 40% -50% -10%;
+  height: 80%;
+  background: radial-gradient(closest-side, var(--glow), transparent);
+  pointer-events: none;
+}
+
+.photo {
+  justify-self: center;
+  width: min(70vw, 16rem);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 60px -25px var(--glow);
+}
+
+.photo img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.text {
+  position: relative;
+  display: grid;
+  gap: 0.9rem;
+  align-content: center;
+  color: #d3dfd9;
+}
+
+.bar {
+  width: 2.25rem;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--accent);
+  box-shadow: 0 0 14px var(--glow);
+}
+
+.title {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 800;
+  color: var(--text);
+}
+
+.text > a {
+  justify-self: start;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.stats li {
+  display: grid;
+  justify-items: center;
+  gap: 0.3rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.stats strong {
+  color: var(--text);
+  font-size: clamp(1.1rem, 3.2vw, 1.4rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.statIcon {
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  margin-bottom: 0.35rem;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgb(46 229 157 / 0.06);
+  color: var(--accent);
+}
+
+@media (min-width: 768px) {
+  .card {
+    grid-template-columns: 16rem 1fr;
+    padding: 2rem;
+  }
+
+  .stats {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1100px) {
+  .card {
+    grid-template-columns: 17rem 1.25fr 1fr;
+    align-items: center;
+    gap: 2.5rem;
+    padding: 0 2.5rem 0 0;
+  }
+
+  .photo {
+    align-self: stretch;
+    width: 100%;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .photo img {
+    height: 100%;
+    aspect-ratio: auto;
+    min-height: 17rem;
+    object-position: center 20%;
+  }
+
+  .text {
+    padding-block: 2.25rem;
+  }
+
+  .stats {
+    grid-column: auto;
+    padding: 0 0 0 2rem;
+    border-top: 0;
+    border-left: 1px solid var(--border);
+  }
+}

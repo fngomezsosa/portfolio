@@ -1,0 +1,28 @@
+---
+/** src/pages/404.astro → dist/404.html. Cloudflare Pages la sirve para rutas inexistentes. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Página no encontrada · Federico Gómez" noindex>
+  <main id="contenido" class="container not-found">
+    <p class="code">404</p>
+    <h1>Esta página no existe</h1>
+    <a href="/">Volver al inicio</a>
+  </main>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: grid;
+    place-content: center;
+    gap: 1rem;
+    min-height: 100svh;
+    text-align: center;
+  }
+
+  .code {
+    color: var(--accent);
+    font-size: 4rem;
+    font-weight: 800;
+  }
+</style>

@@ -1,0 +1,159 @@
+.header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.solid {
+  background: rgb(4 8 7 / 0.82);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom-color: var(--border);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: var(--header-h);
+}
+
+.desktopNav {
+  display: none;
+  margin-inline: auto;
+}
+
+.desktopNav ul {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0.4rem 0.95rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.link:hover {
+  color: var(--text);
+}
+
+.active {
+  color: var(--accent);
+  border-color: var(--border-strong);
+  background: var(--accent-soft);
+}
+
+.cta {
+  display: none;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.3rem;
+  border: 1.5px solid var(--accent);
+  border-radius: 999px;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  box-shadow: 0 0 22px -8px var(--glow);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.cta:hover {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.burger {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-left: auto;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: rgb(46 229 157 / 0.05);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.panel {
+  border-top: 1px solid var(--border);
+  background: rgb(4 8 7 / 0.96);
+  padding-block: 1rem 1.5rem;
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.panel ul {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.panel .link {
+  display: flex;
+  width: 100%;
+  min-height: 3rem;
+  padding-inline: 1rem;
+  font-size: 1.0625rem;
+}
+
+.panelCta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 3rem;
+  margin-top: 1rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (min-width: 640px) {
+  .cta {
+    display: inline-flex;
+    margin-left: auto;
+  }
+
+  .burger {
+    margin-left: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .desktopNav {
+    display: block;
+  }
+
+  .cta {
+    margin-left: 0;
+  }
+
+  .burger,
+  .panel {
+    display: none;
+  }
+}

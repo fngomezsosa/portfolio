@@ -1,0 +1,67 @@
+.panel {
+  display: grid;
+  gap: 1.5rem;
+  padding: 1.75rem 1.25rem 1.25rem;
+}
+
+.carousel {
+  min-width: 0;
+}
+
+.groups {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.group {
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgb(255 255 255 / 0.02);
+}
+
+.group h3 {
+  color: var(--accent);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.group ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+
+.group li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgb(4 8 7 / 0.6);
+  color: #d6e2dc;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 700px) {
+  .groups {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .panel {
+    grid-template-columns: 17rem 1fr;
+    align-items: center;
+    padding: 2rem 1.5rem 1.5rem 2rem;
+  }
+
+  .groups {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
