@@ -1,10 +1,9 @@
 /**
  * URL pública del sitio: la usan astro.config.mjs (sitemap, canonical, Open Graph) y los tests.
- * Se puede sobrescribir por entorno, p. ej. en staging:
- *   SITE_URL=https://portfolio-xxxx.onrender.com
- * Cuando conectes un dominio propio, cambiá el valor por defecto acá.
+ * En cada entorno se define con la variable SITE_URL (producción: https://federicogomez.dev;
+ * staging: la URL de ese entorno). Si no está definida, se usa el dominio de producción.
  */
-export const SITE = process.env.SITE_URL || 'https://federicogomez.pages.dev';
+export const SITE = process.env.SITE_URL || 'https://federicogomez.dev';
 
 /**
  * Staging (STAGING=true): el sitio se publica con <meta name="robots" content="noindex">

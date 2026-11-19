@@ -1,7 +1,7 @@
 # Portfolio · Federico Gómez
 
 Portfolio personal one page: **Desarrollador Backend Python | IA y agentes**.
-Sitio estático hecho con **Astro + React + TypeScript**, desplegable en Cloudflare Pages.
+Sitio estático hecho con **Astro + React + TypeScript**, publicado en **https://federicogomez.dev** (Render Static Site).
 
 | Lighthouse (mobile) | Performance | Accessibility | Best Practices | SEO |
 | ------------------- | ----------- | ------------- | -------------- | --- |
@@ -35,7 +35,7 @@ navegador (*islands*):
 ```
 src/
 ├── config/
-│   ├── site.ts           # nombre, rol, email, LinkedIn, GitHub, WhatsApp, URL de GP-Tech
+│   ├── site.ts           # nombre, rol, email, LinkedIn, WhatsApp, CV, URL de GP-Tech
 │   └── navigation.ts     # secciones del menú (en el orden de la página)
 ├── data/
 │   ├── about.ts          # texto e indicadores de "Sobre mí" y del hero
@@ -96,28 +96,77 @@ enlaces redundantes, carrusel (avance, loop, pausa por hover y por botón, flech
 experiencia, contacto sin formulario, footer, desbordes, `alt` en imágenes, accesibilidad con axe (WCAG 2.1 AA) y
 SEO. Las capturas quedan en `screenshots/` (ignorado por git).
 
-## Deploy en Cloudflare Pages
+## Deploy (Render Static Site)
 
-1. Subir el repo a GitHub.
-2. En Cloudflare: **Workers & Pages → Create → Pages → Connect to Git** y elegir el repo.
-3. Configuración del build:
-   - **Framework preset:** Astro
-   - **Build command:** `npm run build`
-   - **Build output directory:** `dist`
-   - **Variable de entorno:** `NODE_VERSION` = `22.23.4`
-4. Nombre del proyecto `federicogomez` → `https://federicogomez.pages.dev`. Si el nombre no está disponible,
-   cambiar `SITE` en `site.config.mjs` por la URL asignada.
-5. Cada push a `main` despliega; cada rama o PR genera un preview.
+El sitio está publicado en Render como **Static Site**. La configuración vive en el panel de Render (no hay
+`render.yaml` en el repo):
 
-`public/_headers` define headers de seguridad y cache inmutable para `/_astro/*`.
+| Campo                 | Valor                         |
+| --------------------- | ----------------------------- |
+| **Build Command**     | `npm ci && npm run build`     |
+| **Publish Directory** | `dist`                        |
+| **Branch**            | `main`                        |
+
+`npm run build` corre `astro check` (chequeo de tipos) y después `astro build`; si hay un error de tipos, el deploy
+falla y queda publicada la versión anterior.
+
+### Variables de entorno
+
+| Variable       | Producción                  | Para qué sirve                                                                 |
+| -------------- | --------------------------- | ------------------------------------------------------------------------------ |
+| `NODE_VERSION` | `22.23.4`                   | Astro 7 requiere Node 22.23.4 o superior (la misma versión que `.nvmrc`).      |
+| `SITE_URL`     | `https://federicogomez.dev` | URL pública: canonical, Open Graph (`og:url`, `og:image`), sitemap y robots.  |
+| `STAGING`      | no definida                 | Solo para entornos de prueba (ver abajo).                                      |
+
+`SITE_URL` se lee en `site.config.mjs`. Si no está definida, se usa `https://federicogomez.dev`.
+
+**`STAGING`** solo se activa con el valor exacto `true` (cualquier otro valor, o no definirla, equivale a
+producción). Con `STAGING=true`:
+
+- todas las páginas llevan `<meta name="robots" content="noindex">` en lugar de `<link rel="canonical">`
+  (`src/layouts/BaseLayout.astro`);
+- `robots.txt` pasa a `Disallow: /` y no menciona el sitemap (`src/pages/robots.txt.ts`).
+
+El contenido, el diseño, el Open Graph y el sitemap no cambian. En producción, `STAGING` no debe existir (o debe
+tener un valor distinto de `true`).
 
 ### Dominio propio
 
-1. Comprar el dominio (por ejemplo, en Cloudflare Registrar o NIC Argentina para `.com.ar`, delegando los
-   nameservers a Cloudflare).
-2. En el proyecto de Pages: **Custom domains → Set up a custom domain**. El certificado HTTPS es automático.
-3. Cambiar `SITE` en `site.config.mjs`, correr `npm test` y hacer push: canonical, Open Graph y sitemap se
-   regeneran con la URL nueva.
+- Dominio `federicogomez.dev`, registrado en Cloudflare Registrar; el DNS está en Cloudflare.
+- En Render, el dominio está agregado como **Custom Domain** del Static Site.
+- En el DNS de Cloudflare hay registros **CNAME** para `@` y para `www` que apuntan al servicio de Render, en modo
+  **DNS only** (sin el proxy de Cloudflare).
+- El certificado HTTPS lo emite y renueva Render.
+
+Si el dominio cambia: actualizar `SITE_URL` en Render y el valor por defecto en `site.config.mjs`, correr
+`npm test` y hacer push.
+
+### Headers HTTP
+
+`public/_headers` define headers de seguridad y cache inmutable para `/_astro/*`, pero **Render no lo aplica**: se
+copia a `dist/` y se publica como un archivo más. Los headers en Render se configuran desde el panel del Static Site.
+
+### Cómo se actualiza el sitio
+
+Render construye y publica la rama `main` configurada en el Static Site. Con **Auto-Deploy** activado
+(Settings → Build & Deploy), cada push a `main` dispara un deploy; si está desactivado, el deploy se lanza a
+mano con **Manual Deploy**. El estado de cada deploy y sus logs se ven en el panel de Render.
+
+Antes de hacer push, conviene verificar en local:
+
+```bash
+nvm use
+npm ci
+npm run build      # chequeo de tipos + build en dist/
+npm test           # Playwright contra el build de producción (375, 768 y 1440 px)
+npm run preview    # para revisar dist/ en el navegador
+```
+
+### Cómo actualizar el CV
+
+Reemplazar `public/Federico_Gomez_CV.pdf` por la versión nueva **conservando exactamente ese nombre**: lo usa `cv`
+en `src/config/site.ts` y de ahí el botón "Descargar CV" del hero. Si el archivo tiene otro nombre, el botón
+lleva a un 404. Después, push a `main`.
 
 ## Formulario de contacto (pendiente)
 
