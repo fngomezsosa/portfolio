@@ -3,6 +3,7 @@ export const navigation = [
   { id: 'inicio', label: 'Inicio' },
   { id: 'sobre-mi', label: 'Sobre mí' },
   { id: 'proyectos', label: 'Proyectos' },
+  { id: 'arquitectura', label: 'Arquitectura' },
   { id: 'stack', label: 'Stack' },
   { id: 'experiencia', label: 'Experiencia' },
   { id: 'contacto', label: 'Contacto' },
@@ -12,8 +13,6 @@ export type SectionId = (typeof navigation)[number]['id'];
 
 /**
  * Secciones sin entrada propia en el menú: mientras están en pantalla, se marca
- * la entrada indicada. "Arquitectura" no entra en el header a 1024px.
+ * la entrada indicada (p. ej. { 'mi-seccion': 'proyectos' }). Hoy todas tienen entrada.
  */
-export const sectionAliases: Record<string, SectionId> = {
-  arquitectura: 'proyectos',
-};
+export const sectionAliases: Record<string, SectionId> = {};

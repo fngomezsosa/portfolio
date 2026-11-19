@@ -74,6 +74,7 @@ test.describe('Header y navegación', () => {
     for (const [label, id] of [
       ['Sobre mí', 'sobre-mi'],
       ['Proyectos', 'proyectos'],
+      ['Arquitectura', 'arquitectura'],
       ['Stack', 'stack'],
       ['Experiencia', 'experiencia'],
       ['Contacto', 'contacto'],
@@ -142,7 +143,7 @@ test.describe('Header y navegación', () => {
     const menu = page.getByRole('navigation', { name: 'Secciones (menú)' });
     await expect(menu).toBeVisible();
     await expect(page.getByRole('button', { name: 'Cerrar menú' })).toHaveAttribute('aria-expanded', 'true');
-    await expect(menu.getByRole('link')).toHaveText(['Inicio', 'Sobre mí', 'Proyectos', 'Stack', 'Experiencia', 'Contacto', /Hablemos/]);
+    await expect(menu.getByRole('link')).toHaveText(['Inicio', 'Sobre mí', 'Proyectos', 'Arquitectura', 'Stack', 'Experiencia', 'Contacto', /Hablemos/]);
     await expect(menu.getByRole('link').first()).toBeFocused();
 
     await menu.getByRole('link', { name: 'Experiencia' }).click();
@@ -245,13 +246,13 @@ test.describe('Arquitectura', () => {
     ]);
   });
 
-  test('sin entrada propia en el menú: mientras se ve, se marca "Proyectos"', async ({ page }) => {
+  test('entrada "Arquitectura" en el menú, después de "Proyectos", marcada mientras se ve', async ({ page }) => {
     test.skip(!hasDesktopNav(page), 'Navegación de escritorio');
     await page.goto('/');
     const nav = page.getByRole('navigation', { name: 'Secciones', exact: true });
-    await expect(nav.getByRole('link', { name: 'Arquitectura' })).toHaveCount(0);
+    await expect(nav.getByRole('link')).toHaveText(['Inicio', 'Sobre mí', 'Proyectos', 'Arquitectura', 'Stack', 'Experiencia', 'Contacto']);
     await page.evaluate(() => document.getElementById('arquitectura')!.scrollIntoView({ behavior: 'instant' }));
-    await expect(nav.getByRole('link', { name: 'Proyectos' })).toHaveAttribute('aria-current', 'location');
+    await expect(nav.getByRole('link', { name: 'Arquitectura' })).toHaveAttribute('aria-current', 'location');
   });
 
   test('flujo horizontal en desktop y vertical en mobile/tablet', async ({ page }) => {
