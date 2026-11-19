@@ -25,6 +25,24 @@ test.describe('Hero', () => {
     await expect(page.getByRole('link', { name: /Conocé más sobre mí/ })).toBeInViewport();
   });
 
+  test('botón "Descargar CV" junto al CTA, con download, y el PDF se sirve', async ({ page, request }) => {
+    await page.goto('/');
+    const cv = page.locator('#inicio').getByRole('link', { name: 'Descargar CV' });
+    await expect(cv).toBeInViewport();
+    await expect(cv).toHaveAttribute('href', '/Federico_Gomez_CV.pdf');
+    await expect(cv).toHaveAttribute('download', '');
+    const cta = await page.getByRole('link', { name: /Conocé más sobre mí/ }).boundingBox();
+    const box = (await cv.boundingBox())!;
+    // Al lado del CTA (misma fila) o justo debajo si no entra (mobile).
+    expect(Math.abs(box.y - cta!.y) < 4 || box.y > cta!.y).toBe(true);
+    const download = page.waitForEvent('download');
+    await cv.click();
+    expect((await download).suggestedFilename()).toBe('Federico_Gomez_CV.pdf');
+    const response = await request.get('/Federico_Gomez_CV.pdf');
+    expect(response.status()).toBe(200);
+    expect(response.headers()['content-type']).toContain('application/pdf');
+  });
+
   test('la imagen del escritorio se carga como fondo del hero, con prioridad alta', async ({ page }) => {
     await page.goto('/');
     const img = page.locator('#inicio img');
@@ -363,6 +381,9 @@ test.describe('Contacto y footer', () => {
     await expect(contact.getByRole('link', { name: /^LinkedIn/ })).toHaveAttribute('href', LINKEDIN);
     await expect(contact.getByRole('link', { name: /^Email/ })).toHaveAttribute('href', 'mailto:fngomezsosa@gmail.com');
     await expect(contact.getByRole('link', { name: /^WhatsApp/ })).toHaveAttribute('href', WHATSAPP);
+    const cv = contact.getByRole('link', { name: 'Descargar CV' });
+    await expect(cv).toHaveAttribute('href', '/Federico_Gomez_CV.pdf');
+    await expect(cv).toHaveAttribute('download', '');
     await expect(contact.getByRole('link', { name: /Conocé más/ })).toHaveAttribute('href', GPTECH);
     await expect(page.locator('form, input, textarea')).toHaveCount(0);
   });

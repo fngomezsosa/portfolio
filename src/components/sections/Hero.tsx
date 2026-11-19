@@ -3,9 +3,9 @@
  * un degradado oscuro a la izquierda para que el texto se lea. En mobile la imagen pasa
  * arriba como franja que se funde con el fondo.
  */
-import { ArrowDown, Brain, Rocket } from 'lucide-react';
+import { ArrowDown, Brain, Download, Rocket } from 'lucide-react';
 import { siPython } from 'simple-icons';
-import { site } from '../../config/site';
+import { links, site } from '../../config/site';
 import { heroHighlights } from '../../data/about';
 import type { ResponsiveImage } from '../../lib/images';
 import { Button } from '../ui/Button';
@@ -53,9 +53,14 @@ export function Hero({ image }: { image: ResponsiveImage }) {
           ))}
         </ul>
 
-        <Button href="#sobre-mi" iconEnd={<ArrowDown size={18} aria-hidden="true" />}>
-          Conocé más sobre mí
-        </Button>
+        <div className={styles.actions}>
+          <Button href="#sobre-mi" iconEnd={<ArrowDown size={18} aria-hidden="true" />}>
+            Conocé más sobre mí
+          </Button>
+          <Button href={links.cv} download variant="outline" icon={<Download size={18} aria-hidden="true" />}>
+            Descargar CV
+          </Button>
+        </div>
       </div>
     </section>
   );

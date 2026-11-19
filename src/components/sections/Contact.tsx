@@ -1,4 +1,4 @@
-import { ArrowUpRight, Mail } from 'lucide-react';
+import { ArrowUpRight, Download, Mail } from 'lucide-react';
 import { links, mailto } from '../../config/site';
 import type { ResponsiveImage } from '../../lib/images';
 import { Button } from '../ui/Button';
@@ -29,6 +29,11 @@ export function Contact({ gptechIcon }: { gptechIcon: ResponsiveImage }) {
               <li>
                 <Button href={links.whatsapp} external variant="outline" icon={<WhatsAppIcon size={20} className={styles.whatsapp} />}>
                   WhatsApp
+                </Button>
+              </li>
+              <li>
+                <Button href={links.cv} download variant="outline" icon={<Download size={20} aria-hidden="true" />}>
+                  Descargar CV
                 </Button>
               </li>
             </ul>

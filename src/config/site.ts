@@ -23,6 +23,7 @@ export const links = {
   // Número del CV en formato internacional (Argentina, celular: 54 9 11 …).
   whatsapp: 'https://wa.me/5491134363005?text=' + encodeURIComponent('Hola Federico, vi tu portfolio y quería contactarte.'),
   gptech: 'https://www.gp-tech.com.ar/',
+  cv: '/Federico_Gomez_CV.pdf',
 } as const;
 
 export const mailto = `mailto:${links.email}`;
