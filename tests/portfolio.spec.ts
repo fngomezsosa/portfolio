@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { scrollThrough, isDesktop } from './helpers';
+import { scrollThrough, isDesktop, hasDesktopNav } from './helpers';
 
 const LINKEDIN = 'https://www.linkedin.com/in/federico-nicolas-gomez-421b14192';
 const WHATSAPP = /^https:\/\/wa\.me\/5491134363005\?text=/;
@@ -68,7 +68,7 @@ test.describe('Header y navegación', () => {
   });
 
   test('escritorio: cada enlace lleva a su sección y queda marcado como activo', async ({ page }) => {
-    test.skip(!isDesktop(page), 'Navegación de escritorio');
+    test.skip(!hasDesktopNav(page), 'Navegación de escritorio');
     await page.goto('/');
     const nav = page.getByRole('navigation', { name: 'Secciones', exact: true });
     for (const [label, id] of [
@@ -85,6 +85,46 @@ test.describe('Header y navegación', () => {
     }
   });
 
+  test('el header entra en una línea, sin cortes ni solapamientos, de 1024 a 1440px', async ({ page }) => {
+    test.skip(!hasDesktopNav(page), 'Recorre anchos de escritorio');
+    for (const width of [1024, 1100, 1200, 1280, 1440]) {
+      await page.setViewportSize({ width, height: 800 });
+      await page.goto('/');
+      await page.evaluate(() => document.fonts.ready);
+      const problems = await page.evaluate(() => {
+        const visible = (el: Element) => getComputedStyle(el).display !== 'none' && el.getBoundingClientRect().width > 0;
+        const inner = document.querySelector('header')!.firstElementChild!;
+        const out: string[] = [];
+        // Cada elemento visible (logo, cada enlace del menú, Hablemos, hamburguesa), en orden:
+        // sin solaparse con el anterior y dentro de la pantalla. Se miden los elementos reales,
+        // no sus contenedores: un <nav> encogido por flex puede tener enlaces desbordados.
+        const items = [...inner.querySelectorAll('a, button')].filter(visible);
+        items.forEach((el, i) => {
+          const r = el.getBoundingClientRect();
+          const label = el.textContent!.trim() || el.getAttribute('aria-label') || 'botón';
+          if (i && r.left < items[i - 1].getBoundingClientRect().right - 0.5) out.push(`"${label}" solapado con el anterior`);
+          if (r.right > window.innerWidth + 0.5) out.push(`"${label}" fuera de pantalla`);
+        });
+        // Ningún texto de enlace o botón en dos líneas.
+        for (const el of inner.querySelectorAll('a, button')) {
+          if (!visible(el)) continue;
+          for (const node of el.childNodes) {
+            if (node.nodeType !== Node.TEXT_NODE || !node.textContent!.trim()) continue;
+            const range = document.createRange();
+            range.selectNodeContents(node);
+            if (new Set([...range.getClientRects()].map((r) => Math.round(r.top))).size > 1) out.push(`"${node.textContent!.trim()}" en dos líneas`);
+          }
+        }
+        return out;
+      });
+      expect(problems, `${width}px`).toEqual([]);
+      // Menú de escritorio desde 1200px; hamburguesa por debajo.
+      const desktopNav = page.getByRole('navigation', { name: 'Secciones', exact: true });
+      if (width >= 1200) await expect(desktopNav).toBeVisible();
+      else await expect(page.getByRole('button', { name: 'Abrir menú' })).toBeVisible();
+    }
+  });
+
   test('botón "Hablemos" lleva a contacto', async ({ page }) => {
     test.skip(page.viewportSize()!.width < 640, 'En mobile el CTA está dentro del menú');
     await page.goto('/');
@@ -93,7 +133,7 @@ test.describe('Header y navegación', () => {
   });
 
   test('mobile/tablet: menú hamburguesa abre, navega, cierra y vuelve el foco con Esc', async ({ page }) => {
-    test.skip(isDesktop(page), 'Menú hamburguesa solo en mobile y tablet');
+    test.skip(hasDesktopNav(page), 'Menú hamburguesa por debajo de 1200px');
     await page.goto('/');
     const button = page.getByRole('button', { name: 'Abrir menú' });
     await expect(button).toBeVisible();
@@ -206,7 +246,7 @@ test.describe('Arquitectura', () => {
   });
 
   test('sin entrada propia en el menú: mientras se ve, se marca "Proyectos"', async ({ page }) => {
-    test.skip(!isDesktop(page), 'Navegación de escritorio');
+    test.skip(!hasDesktopNav(page), 'Navegación de escritorio');
     await page.goto('/');
     const nav = page.getByRole('navigation', { name: 'Secciones', exact: true });
     await expect(nav.getByRole('link', { name: 'Arquitectura' })).toHaveCount(0);

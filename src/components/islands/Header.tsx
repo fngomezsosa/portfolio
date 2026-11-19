@@ -1,7 +1,7 @@
 /**
  * Header sticky (island, client:load).
  * - Scroll spy: marca la sección visible en la navegación.
- * - Menú hamburguesa en mobile/tablet: Esc cierra y devuelve el foco al botón;
+ * - Menú hamburguesa por debajo de 1200px: Esc cierra y devuelve el foco al botón;
  *   elegir una sección cierra el menú.
  * Sin JS (antes de hidratar), los enlaces de escritorio funcionan igual: son anclas.
  */
@@ -53,7 +53,7 @@ export default function Header() {
         buttonRef.current?.focus();
       }
     };
-    const desktop = window.matchMedia('(min-width: 1024px)');
+    const desktop = window.matchMedia('(min-width: 1200px)'); // mismo corte que Header.module.css
     const onChange = () => desktop.matches && setOpen(false);
     document.addEventListener('keydown', onKey);
     desktop.addEventListener('change', onChange);

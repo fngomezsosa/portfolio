@@ -23,4 +23,8 @@ export async function scrollThrough(page: Page) {
   await page.waitForTimeout(800); // fin de las transiciones
 }
 
+/** Layout de escritorio de las secciones (≥ 1024px). */
 export const isDesktop = (page: Page) => page.viewportSize()!.width >= 1024;
+
+/** Menú de escritorio en el header (≥ 1200px); por debajo, menú hamburguesa. */
+export const hasDesktopNav = (page: Page) => page.viewportSize()!.width >= 1200;
