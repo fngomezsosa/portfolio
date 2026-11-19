@@ -158,6 +158,45 @@ test.describe('Proyectos', () => {
   });
 });
 
+test.describe('Arquitectura', () => {
+  test('la sección existe, entre Proyectos y Stack, y muestra los 6 pasos y 3 decisiones', async ({ page }) => {
+    await page.goto('/#arquitectura');
+    const section = page.locator('#arquitectura');
+    await expect(section.getByRole('heading', { level: 2, name: 'Cómo funciona TuPropIA' })).toBeVisible();
+    await expect(section).toContainText('Arquitectura de un agente de IA conversacional en producción');
+    const order = await page.evaluate(() => [...document.querySelectorAll('main > section')].map((s) => s.id));
+    expect(order.indexOf('arquitectura')).toBe(order.indexOf('proyectos') + 1);
+    expect(order.indexOf('stack')).toBe(order.indexOf('arquitectura') + 1);
+
+    const steps = section.getByRole('list', { name: 'Flujo de un mensaje, paso a paso' }).getByRole('listitem');
+    await expect(steps).toHaveCount(6);
+    await expect(steps.getByRole('heading', { level: 3 })).toHaveText([
+      'WhatsApp Cloud API',
+      'Webhook',
+      'Cola de procesamiento',
+      'Agente de IA',
+      'Validación en el servidor',
+      'CRM',
+    ]);
+    await expect(steps.nth(1)).toContainText('Validación HMAC-SHA256 y rate limiting con Redis');
+    await expect(steps.nth(4)).toContainText('Acciones ESCALAR, CALIFICAR y VISITA');
+    await expect(section.getByRole('heading', { level: 4 })).toHaveText([
+      'Acciones validadas en el servidor',
+      'RAG propio, sin frameworks',
+      'SaaS multitenant',
+    ]);
+  });
+
+  test('flujo horizontal en desktop y vertical en mobile/tablet', async ({ page }) => {
+    await page.goto('/#arquitectura');
+    const tops = await page
+      .locator('#arquitectura ol > li')
+      .evaluateAll((items) => items.map((li) => Math.round(li.getBoundingClientRect().top)));
+    if (isDesktop(page)) expect(new Set(tops).size).toBe(1);
+    else expect(tops).toEqual([...tops].sort((a, b) => a - b).filter((v, i, a) => a.indexOf(v) === i));
+  });
+});
+
 test.describe('Stack', () => {
   const track = (page: import('@playwright/test').Page) => page.getByTestId('tech-track');
 

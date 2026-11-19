@@ -1,0 +1,208 @@
+.diagram {
+  margin-top: 2.5rem;
+  padding: 1.5rem 1.25rem;
+  overflow: hidden;
+}
+
+.diagram::before {
+  content: '';
+  position: absolute;
+  inset: -60% 20% 40% 20%;
+  background: radial-gradient(closest-side, var(--glow), transparent);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* Mobile y tablet: flujo vertical. */
+.flow {
+  position: relative;
+  display: grid;
+  gap: 0;
+}
+
+.step {
+  display: grid;
+  justify-items: center;
+}
+
+.node {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    'icon title'
+    'icon detail';
+  column-gap: 1rem;
+  row-gap: 0.15rem;
+  align-items: center;
+  width: 100%;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgb(4 8 7 / 0.65);
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.node:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-3px);
+}
+
+.number {
+  position: absolute;
+  top: -0.6rem;
+  left: -0.6rem;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.icon {
+  grid-area: icon;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.stepTitle {
+  grid-area: title;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.stepDetail {
+  grid-area: detail;
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+  height: 2.25rem;
+  color: var(--accent);
+  transform: rotate(90deg);
+}
+
+/* Decisiones de diseño */
+.decisionsTitle {
+  margin-top: 3rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.decisions {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.decision {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.decision:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-4px);
+}
+
+.decisionIcon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.decision h4 {
+  margin-top: 0.25rem;
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.decision p {
+  color: #c9d6cf;
+  font-size: 0.95rem;
+}
+
+@media (min-width: 768px) {
+  .decisions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Desktop: flujo horizontal. */
+@media (min-width: 1024px) {
+  .diagram {
+    padding: 2.5rem 1.75rem 2rem;
+  }
+
+  .flow {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    column-gap: 2rem;
+  }
+
+  .step {
+    position: relative;
+    justify-items: stretch;
+  }
+
+  .node {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'icon'
+      'title'
+      'detail';
+    justify-items: center;
+    align-content: start;
+    height: 100%;
+    row-gap: 0.4rem;
+    padding: 1.4rem 0.75rem;
+    text-align: center;
+  }
+
+  .icon {
+    margin-bottom: 0.35rem;
+  }
+
+  .stepTitle {
+    font-size: 0.95rem;
+  }
+
+  .stepDetail {
+    font-size: 0.8125rem;
+  }
+
+  .arrow {
+    position: absolute;
+    top: 50%;
+    right: -2rem;
+    width: 2rem;
+    height: auto;
+    transform: translateY(-50%);
+  }
+}
