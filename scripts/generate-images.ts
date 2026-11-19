@@ -26,7 +26,7 @@ const og = `<!doctype html><html><head><meta charset="utf-8"><style>
   <div class="content">
     <div class="badge">Desarrollador Backend Python | IA y agentes</div>
     <h1>Federico<span>Gómez</span></h1>
-    <p>Python, Inteligencia Artificial y productos SaaS.</p>
+    <p>Python · IA y agentes</p>
   </div>
 </body></html>`;
 
