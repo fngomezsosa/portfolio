@@ -9,3 +9,11 @@ export const navigation = [
 ] as const;
 
 export type SectionId = (typeof navigation)[number]['id'];
+
+/**
+ * Secciones sin entrada propia en el menú: mientras están en pantalla, se marca
+ * la entrada indicada. "Arquitectura" no entra en el header a 1024px.
+ */
+export const sectionAliases: Record<string, SectionId> = {
+  arquitectura: 'proyectos',
+};

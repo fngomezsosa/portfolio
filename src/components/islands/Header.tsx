@@ -7,7 +7,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { Menu, X, ArrowRight } from 'lucide-react';
-import { navigation, type SectionId } from '../../config/navigation';
+import { navigation, sectionAliases, type SectionId } from '../../config/navigation';
 import { Logo } from '../ui/Logo';
 import styles from './Header.module.css';
 
@@ -20,13 +20,14 @@ export default function Header() {
 
   // Scroll spy: la sección que cruza la franja central de la pantalla es la activa.
   useEffect(() => {
-    const sections = navigation
-      .map((item) => document.getElementById(item.id))
-      .filter((el): el is HTMLElement => el !== null);
+    const ids = [...navigation.map((item) => item.id), ...Object.keys(sectionAliases)];
+    const sections = ids.map((id) => document.getElementById(id)).filter((el): el is HTMLElement => el !== null);
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) setActive(entry.target.id as SectionId);
+          if (!entry.isIntersecting) continue;
+          const id = entry.target.id;
+          setActive(sectionAliases[id] ?? (id as SectionId));
         }
       },
       { rootMargin: '-45% 0px -50% 0px' },
