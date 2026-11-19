@@ -115,7 +115,7 @@ test.describe('Sobre mí', () => {
     const section = page.locator('#sobre-mi');
     await expect(section.getByRole('img', { name: 'Federico Gómez, retrato profesional' })).toBeVisible();
     await expect(section).toContainText('más de 9 años de experiencia, los últimos 6 con Python y Django');
-    await expect(section.getByRole('listitem')).toHaveText(['+9 añosde experiencia', '+6 añoscon Python', 'Productosen producción']);
+    await expect(section.getByRole('listitem')).toHaveText(['+9 añosde experiencia', '+6 añoscon Python', '2 productosen producción']);
     await section.getByRole('link', { name: /Ver mi experiencia/ }).click();
     await expect(page.locator('#experiencia')).toBeInViewport();
   });

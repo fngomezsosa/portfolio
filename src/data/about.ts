@@ -7,7 +7,7 @@ export const about = {
   stats: [
     { icon: 'code', value: '+9 años', label: 'de experiencia' },
     { icon: 'python', value: '+6 años', label: 'con Python' },
-    { icon: 'rocket', value: 'Productos', label: 'en producción' },
+    { icon: 'rocket', value: '2 productos', label: 'en producción' },
   ],
 } as const;
 
