@@ -39,6 +39,8 @@ import {
   Wrench,
   Zap,
   Bot,
+  MessagesSquare,
+  ShoppingCart,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -47,6 +49,8 @@ export type TechIconRef = { kind: 'brand'; icon: SimpleIcon } | { kind: 'generic
 export interface Tech {
   name: string;
   icon: TechIconRef;
+  /** false: se muestra en su bloque, pero no en el carrusel de arriba. */
+  carousel?: boolean;
 }
 
 export interface TechCategory {
@@ -75,8 +79,8 @@ const PRIORITY = [
   'Docker',
   'Redis',
 ];
-/** Siempre al final (sin borrarlas). */
-const LAST = ['PHP', 'Symfony', 'SOAP', 'GraphQL'];
+/** Siempre al final (sin borrarlas). Magento va después de Symfony en Backend; no está en el carrusel. */
+const LAST = ['PHP', 'Symfony', 'Magento', 'SOAP', 'GraphQL'];
 
 function rank(name: string, definitionIndex: number): number {
   const p = PRIORITY.indexOf(name);
@@ -104,6 +108,8 @@ const categories: TechCategory[] = [
       { name: 'FastAPI', icon: brand(siFastapi) },
       { name: 'PHP', icon: brand(siPhp) },
       { name: 'Symfony', icon: brand(siSymfony) },
+      // Sin ícono en Simple Icons: genérico de Lucide (e-commerce).
+      { name: 'Magento', icon: generic(ShoppingCart), carousel: false },
     ],
   },
   {
@@ -127,6 +133,8 @@ const categories: TechCategory[] = [
       { name: 'Embeddings', icon: generic(Layers) },
       { name: 'pgvector', icon: brand(siPostgresql) },
       { name: 'Claude Code', icon: brand(siClaude) },
+      // Sin ícono en Simple Icons: genérico de Lucide (chat).
+      { name: 'ChatGPT', icon: generic(MessagesSquare), carousel: false },
     ],
   },
   {
@@ -168,7 +176,7 @@ const categories: TechCategory[] = [
 /** Categorías con sus tecnologías ordenadas por prioridad (grilla de la sección Stack). */
 export const stack: TechCategory[] = categories.map((c) => ({ ...c, items: byPriority(c.items) }));
 
-/** Todas las tecnologías en una sola fila (carrusel), ordenadas por prioridad. */
+/** Tecnologías del carrusel, ordenadas por prioridad. Excluye las marcadas con carousel: false. */
 export const allTech: (Tech & { category: string })[] = byPriority(
-  categories.flatMap((c) => c.items.map((t) => ({ ...t, category: c.label }))),
+  categories.flatMap((c) => c.items.filter((t) => t.carousel !== false).map((t) => ({ ...t, category: c.label }))),
 );

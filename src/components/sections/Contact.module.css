@@ -43,10 +43,6 @@
   color: #25d366;
 }
 
-.email {
-  color: var(--muted);
-  font-size: 0.9rem;
-}
 
 .gptech {
   position: relative;
@@ -86,7 +82,8 @@
 
 @media (min-width: 900px) {
   .card {
-    grid-template-columns: 1.2fr 1fr;
+    /* Columna de contacto más ancha: LinkedIn, el email y WhatsApp entran en una fila desde 1200px. */
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
     padding: 2.75rem 3rem;
   }
 

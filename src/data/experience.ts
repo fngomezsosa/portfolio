@@ -22,7 +22,7 @@ export const experience: Job[] = [
     start: '2026-05',
     end: null,
     summary:
-      'Diseño y desarrollo de TuPropIA, plataforma SaaS multitenant con roles, planes y billing. Proyecto propio, de requisitos a producción.',
+      'Diseño y desarrollo de TuPropIA y TuAgencIA, plataformas SaaS multitenant con roles, planes y billing. Proyectos propios, de requisitos a producción.',
     highlights: [
       'Agente de IA conversacional por WhatsApp: califica leads, responde consultas y agenda visitas. Las acciones del agente se procesan y validan en el servidor antes de ejecutarse.',
       'RAG implementado desde cero con pgvector y OpenAI SDK (embeddings, búsqueda semántica y generación de respuestas), sin frameworks de abstracción.',

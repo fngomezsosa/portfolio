@@ -58,6 +58,53 @@
   display: block;
 }
 
+/*
+ * Efecto de escritura del nombre. Cada carácter aparece en su --delay; el cursor
+ * aparece al final y parpadea (con visibility, no opacity: una animación de opacity
+ * en un hijo puede romper el degradado con background-clip: text).
+ */
+.char {
+  visibility: hidden;
+  animation: type-in 0s linear var(--delay) forwards;
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.42em;
+  height: 0.74em;
+  margin-left: 0.06em;
+  border-radius: 0.06em;
+  background: var(--accent);
+  visibility: hidden;
+  animation: cursor-blink 1.05s linear var(--delay) infinite;
+}
+
+@keyframes type-in {
+  to {
+    visibility: visible;
+  }
+}
+
+@keyframes cursor-blink {
+  0%,
+  55% {
+    visibility: visible;
+  }
+  56%,
+  100% {
+    visibility: hidden;
+  }
+}
+
+/* Movimiento reducido: nombre completo de entrada y cursor fijo, sin parpadeo. */
+@media (prefers-reduced-motion: reduce) {
+  .char,
+  .cursor {
+    visibility: visible;
+    animation: none;
+  }
+}
+
 .description {
   max-width: 34rem;
   margin-top: 1.25rem;

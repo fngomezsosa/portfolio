@@ -43,6 +43,55 @@ test.describe('Hero', () => {
     expect(response.headers()['content-type']).toContain('application/pdf');
   });
 
+  test('nombre: completo en el HTML y accesible, aunque se esté escribiendo', async ({ page }) => {
+    await page.goto('/');
+    const h1 = page.getByRole('heading', { level: 1, name: 'Federico Gómez' });
+    await expect(h1).toHaveAttribute('aria-label', 'Federico Gómez');
+    // El texto completo ya está en el DOM desde el primer momento (no lo agrega JS).
+    await expect(h1).toHaveText('Federico Gómez');
+    // Las letras sueltas no se leen de a una.
+    expect(await h1.locator('> span').evaluateAll((spans) => spans.every((s) => s.getAttribute('aria-hidden') === 'true'))).toBe(true);
+  });
+
+  test('nombre: se escribe en menos de 1,8 s y queda el cursor parpadeando al final', async ({ page }) => {
+    await page.goto('/');
+    const chars = page.locator('#hero-title [style*="--delay"]').filter({ hasNot: page.getByTestId('hero-cursor') });
+    const cursor = page.getByTestId('hero-cursor');
+    // Lo demás del hero no espera a la animación.
+    await expect(page.getByText(/Desarrollo soluciones digitales escalables/)).toBeVisible();
+    await expect(page.locator('#inicio').getByRole('link', { name: 'Descargar CV' })).toBeVisible();
+    // Último --delay (cursor) < 1,8 s.
+    const lastDelay = await cursor.evaluate((el) => parseFloat(getComputedStyle(el).getPropertyValue('--delay')));
+    expect(lastDelay).toBeLessThan(1800);
+    await page.waitForTimeout(lastDelay + 200);
+    expect(await chars.evaluateAll((els) => els.every((el) => getComputedStyle(el).visibility === 'visible'))).toBe(true);
+    // Cursor después de la "z", con animación infinita de parpadeo.
+    const [z, c] = await Promise.all([
+      page.locator('#hero-title .text-gradient > span').filter({ hasText: 'z' }).boundingBox(),
+      cursor.boundingBox(),
+    ]);
+    expect(c!.x).toBeGreaterThanOrEqual(z!.x + z!.width - 1);
+    expect(await cursor.evaluate((el) => getComputedStyle(el).animationIterationCount)).toBe('infinite');
+  });
+
+  test('nombre: sin saltos de diseño mientras se escribe', async ({ page }) => {
+    await page.goto('/');
+    const box = () => page.locator('#hero-title').boundingBox();
+    const before = await box();
+    await page.waitForTimeout(1600);
+    expect(await box()).toEqual(before);
+  });
+
+  test('nombre: con reduced motion se ve completo de entrada y el cursor está fijo', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+    const chars = page.locator('#hero-title [style*="--delay"]');
+    expect(await chars.evaluateAll((els) => els.every((el) => getComputedStyle(el).visibility === 'visible'))).toBe(true);
+    const cursor = page.getByTestId('hero-cursor');
+    await expect(cursor).toBeVisible();
+    expect(await cursor.evaluate((el) => getComputedStyle(el).animationName)).toBe('none');
+  });
+
   test('la imagen del escritorio se carga como fondo del hero, con prioridad alta', async ({ page }) => {
     await page.goto('/');
     const img = page.locator('#inicio img');
@@ -301,10 +350,16 @@ test.describe('Stack', () => {
       'Redis',
     ]);
     expect(carousel.slice(-4)).toEqual(['PHP', 'Symfony', 'SOAP', 'GraphQL']);
+    // Magento y ChatGPT están en sus bloques, pero no en el carrusel.
+    expect(carousel).toHaveLength(33);
+    expect(carousel).not.toContain('Magento');
+    expect(carousel).not.toContain('ChatGPT');
 
     const group = (label: string) =>
       page.locator('#stack section').filter({ has: page.getByRole('heading', { level: 3, name: label }) }).locator('li');
-    await expect(group('Backend')).toHaveText(['Python', 'Django', 'Django REST Framework', 'FastAPI', 'PHP', 'Symfony']);
+    await expect(group('Backend')).toHaveText(['Python', 'Django', 'Django REST Framework', 'FastAPI', 'PHP', 'Symfony', 'Magento']);
+    await expect(group('Inteligencia Artificial').last()).toHaveText('ChatGPT');
+    await expect(group('Inteligencia Artificial').nth(-2)).toHaveText('Claude Code');
     await expect(group('Bases de datos').first()).toHaveText('PostgreSQL');
     await expect(group('Cloud e infraestructura').first()).toHaveText('AWS');
     await expect(group('Otras tecnologías')).toHaveText(['REST APIs', 'Webhooks', 'Git', 'SOAP', 'GraphQL']);
@@ -424,16 +479,27 @@ test.describe('Experiencia', () => {
 });
 
 test.describe('Contacto y footer', () => {
-  test('LinkedIn, Email y WhatsApp, sin formulario', async ({ page }) => {
+  test('LinkedIn, email y WhatsApp, sin formulario ni CV', async ({ page }) => {
     await page.goto('/#contacto');
     const contact = page.locator('#contacto');
     await expect(contact.getByRole('heading', { name: '¿Hablamos?' })).toBeVisible();
     await expect(contact.getByRole('link', { name: /^LinkedIn/ })).toHaveAttribute('href', LINKEDIN);
-    await expect(contact.getByRole('link', { name: /^Email/ })).toHaveAttribute('href', 'mailto:fngomezsosa@gmail.com');
+    // El botón de email muestra la dirección; no se repite en otro lado de la sección.
+    const email = contact.getByRole('link', { name: 'fngomezsosa@gmail.com' });
+    await expect(email).toHaveAttribute('href', 'mailto:fngomezsosa@gmail.com');
+    await expect(contact.getByText('fngomezsosa@gmail.com')).toHaveCount(1);
     await expect(contact.getByRole('link', { name: /^WhatsApp/ })).toHaveAttribute('href', WHATSAPP);
-    const cv = contact.getByRole('link', { name: 'Descargar CV' });
-    await expect(cv).toHaveAttribute('href', '/Federico_Gomez_CV.pdf');
-    await expect(cv).toHaveAttribute('download', '');
+    await expect(contact.getByRole('link', { name: 'Descargar CV' })).toHaveCount(0);
+    const buttons = contact.locator('ul').first().getByRole('link');
+    await expect(buttons).toHaveCount(3);
+    if (hasDesktopNav(page)) {
+      // De 1200 a 1440px, los tres en una sola fila.
+      for (const width of [1200, 1280, 1440]) {
+        await page.setViewportSize({ width, height: 900 });
+        const tops = await buttons.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top)));
+        expect(new Set(tops).size, `${width}px`).toBe(1);
+      }
+    }
     await expect(contact.getByRole('link', { name: /Conocé más/ })).toHaveAttribute('href', GPTECH);
     await expect(contact).toContainText('De desarrollador a creador de productos tecnológicos. Co-fundador de GP-Tech.');
     await expect(contact).not.toContainText('una empresa enfocada en desarrollar productos tecnológicos con IA');
