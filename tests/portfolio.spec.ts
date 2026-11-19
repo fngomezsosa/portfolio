@@ -216,6 +216,32 @@ test.describe('Stack', () => {
     }
   });
 
+  test('orden de prioridad: carrusel y categorías', async ({ page }) => {
+    await page.goto('/#stack');
+    const carousel = await track(page).locator('li:not([aria-hidden]) span:last-child').allTextContents();
+    expect(carousel.slice(0, 11)).toEqual([
+      'Python',
+      'Django',
+      'Django REST Framework',
+      'FastAPI',
+      'PostgreSQL',
+      'pgvector',
+      'OpenAI API',
+      'RAG',
+      'AWS',
+      'Docker',
+      'Redis',
+    ]);
+    expect(carousel.slice(-4)).toEqual(['PHP', 'Symfony', 'SOAP', 'GraphQL']);
+
+    const group = (label: string) =>
+      page.locator('#stack section').filter({ has: page.getByRole('heading', { level: 3, name: label }) }).locator('li');
+    await expect(group('Backend')).toHaveText(['Python', 'Django', 'Django REST Framework', 'FastAPI', 'PHP', 'Symfony']);
+    await expect(group('Bases de datos').first()).toHaveText('PostgreSQL');
+    await expect(group('Cloud e infraestructura').first()).toHaveText('AWS');
+    await expect(group('Otras tecnologías')).toHaveText(['REST APIs', 'Webhooks', 'Git', 'SOAP', 'GraphQL']);
+  });
+
   test('carrusel: avanza solo, en loop, y la copia duplicada está oculta a lectores', async ({ page }) => {
     await page.goto('/#stack');
     await expect(track(page)).toBeVisible();

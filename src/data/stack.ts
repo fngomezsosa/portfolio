@@ -58,7 +58,42 @@ export interface TechCategory {
 const brand = (icon: SimpleIcon): TechIconRef => ({ kind: 'brand', icon });
 const generic = (icon: LucideIcon): TechIconRef => ({ kind: 'generic', icon });
 
-export const stack: TechCategory[] = [
+/**
+ * Orden de prioridad, para el carrusel y dentro de cada categoría.
+ * Lo que no figura en ninguna lista mantiene su orden de definición, entre PRIORITY y LAST.
+ */
+const PRIORITY = [
+  'Python',
+  'Django',
+  'Django REST Framework',
+  'FastAPI',
+  'PostgreSQL',
+  'pgvector',
+  'OpenAI API',
+  'RAG',
+  'AWS',
+  'Docker',
+  'Redis',
+];
+/** Siempre al final (sin borrarlas). */
+const LAST = ['PHP', 'Symfony', 'SOAP', 'GraphQL'];
+
+function rank(name: string, definitionIndex: number): number {
+  const p = PRIORITY.indexOf(name);
+  if (p !== -1) return p;
+  const l = LAST.indexOf(name);
+  if (l !== -1) return 10_000 + l;
+  return 1_000 + definitionIndex;
+}
+
+function byPriority<T extends { name: string }>(items: T[]): T[] {
+  return items
+    .map((item, i) => ({ item, r: rank(item.name, i) }))
+    .sort((a, b) => a.r - b.r)
+    .map(({ item }) => item);
+}
+
+const categories: TechCategory[] = [
   {
     id: 'backend',
     label: 'Backend',
@@ -130,7 +165,10 @@ export const stack: TechCategory[] = [
   },
 ];
 
-/** Todas las tecnologías en una sola fila (carrusel), sin repetir nombres. */
-export const allTech: (Tech & { category: string })[] = stack.flatMap((c) =>
-  c.items.map((t) => ({ ...t, category: c.label })),
+/** Categorías con sus tecnologías ordenadas por prioridad (grilla de la sección Stack). */
+export const stack: TechCategory[] = categories.map((c) => ({ ...c, items: byPriority(c.items) }));
+
+/** Todas las tecnologías en una sola fila (carrusel), ordenadas por prioridad. */
+export const allTech: (Tech & { category: string })[] = byPriority(
+  categories.flatMap((c) => c.items.map((t) => ({ ...t, category: c.label }))),
 );
