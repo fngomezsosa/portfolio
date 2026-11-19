@@ -385,6 +385,8 @@ test.describe('Contacto y footer', () => {
     await expect(cv).toHaveAttribute('href', '/Federico_Gomez_CV.pdf');
     await expect(cv).toHaveAttribute('download', '');
     await expect(contact.getByRole('link', { name: /Conocé más/ })).toHaveAttribute('href', GPTECH);
+    await expect(contact).toContainText('De desarrollador a creador de productos tecnológicos. Co-fundador de GP-Tech.');
+    await expect(contact).not.toContainText('una empresa enfocada en desarrollar productos tecnológicos con IA');
     await expect(page.locator('form, input, textarea')).toHaveCount(0);
   });
 

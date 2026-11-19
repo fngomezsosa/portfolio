@@ -59,9 +59,7 @@ export function Contact({ gptechIcon }: { gptechIcon: ResponsiveImage }) {
                 <p>Innovación. Tecnología. Soluciones.</p>
               </div>
             </div>
-            <p className={styles.gptechText}>
-              Co-fundador de GP-Tech, una empresa enfocada en desarrollar productos tecnológicos con IA.
-            </p>
+            <p className={styles.gptechText}>De desarrollador a creador de productos tecnológicos. Co-fundador de GP-Tech.</p>
             <Button href={links.gptech} external variant="outline" size="sm" iconEnd={<ArrowUpRight size={16} aria-hidden="true" />}>
               Conocé más
             </Button>
