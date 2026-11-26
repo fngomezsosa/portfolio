@@ -39,7 +39,9 @@ import {
   Wrench,
   Zap,
   Bot,
+  Boxes,
   MessagesSquare,
+  ReceiptText,
   ShoppingCart,
   type LucideIcon,
 } from 'lucide-react';
@@ -169,6 +171,9 @@ const categories: TechCategory[] = [
       { name: 'SOAP', icon: generic(FileCode) },
       { name: 'Webhooks', icon: generic(Webhook) },
       { name: 'Git', icon: brand(siGit) },
+      // Sin ícono de marca: genéricos de Lucide.
+      { name: 'ERP (Odoo, Sperta)', icon: generic(Boxes), carousel: false },
+      { name: 'Facturación electrónica AFIP/ARCA', icon: generic(ReceiptText), carousel: false },
     ],
   },
 ];

@@ -222,20 +222,22 @@ test.describe('Sobre mí', () => {
     await page.goto('/#sobre-mi');
     const section = page.locator('#sobre-mi');
     await expect(section.getByRole('img', { name: 'Federico Gómez, retrato profesional' })).toBeVisible();
-    await expect(section).toContainText('más de 9 años de experiencia, los últimos 6 con Python y Django');
-    await expect(section.getByRole('listitem')).toHaveText(['+9 añosde experiencia', '+6 añoscon Python', '2 productosen producción']);
+    await expect(section).toContainText('Desarrollador backend con más de 11 años de experiencia en plataformas de turismo y e-commerce.');
+    await expect(section).toContainText('Python en producción desde 2020 y Django/FastAPI desde 2023.');
+    await expect(section.getByRole('listitem')).toHaveText(['11+ añosde experiencia', 'Desde 2020Python en producción', '2 productosen producción']);
     await section.getByRole('link', { name: /Ver mi experiencia/ }).click();
     await expect(page.locator('#experiencia')).toBeInViewport();
   });
 });
 
 test.describe('Proyectos', () => {
-  test('tres tarjetas con logo oficial, descripción y funcionalidades', async ({ page }) => {
+  test('dos tarjetas (TuPropIA y TuAgencIA) con logo oficial, descripción y funcionalidades', async ({ page }) => {
     await page.goto('/#proyectos');
     await scrollThrough(page);
     const cards = page.locator('#proyectos article');
-    await expect(cards).toHaveCount(3);
-    for (const name of ['TuPropIA', 'TuAgencIA', 'GP-Tech']) {
+    await expect(cards).toHaveCount(2);
+    await expect(page.locator('#proyectos')).toContainText('TuPropIA y TuAgencIA son productos de GP Tech');
+    for (const name of ['TuPropIA', 'TuAgencIA']) {
       const heading = page.locator('#proyectos').getByRole('heading', { level: 3, name });
       await expect(heading).toBeVisible();
       const logo = heading.getByRole('img', { name });
@@ -245,18 +247,28 @@ test.describe('Proyectos', () => {
     await expect(cards.nth(0)).toContainText('Integración con Tokko');
     await expect(cards.nth(1)).toContainText('CRM para concesionarias con IA');
     await expect(cards.nth(1)).toContainText('Integración con Mercado Libre');
-    await expect(cards.nth(2)).toContainText('Innovación. Tecnología. Soluciones.');
+    // GP-Tech ya no es una tarjeta de proyecto.
+    await expect(page.locator('#proyectos').getByRole('heading', { level: 3, name: 'GP-Tech' })).toHaveCount(0);
   });
 
-  test('TuPropIA y TuAgencIA no tienen enlaces; GP-Tech abre su web en otra pestaña', async ({ page }) => {
+  test('las tarjetas no tienen enlaces', async ({ page }) => {
     await page.goto('/');
-    const cards = page.locator('#proyectos article');
-    await expect(cards.nth(0).getByRole('link')).toHaveCount(0);
-    await expect(cards.nth(1).getByRole('link')).toHaveCount(0);
-    const gp = cards.nth(2).getByRole('link', { name: /Visitar GP-Tech/ });
-    await expect(gp).toHaveAttribute('href', GPTECH);
-    await expect(gp).toHaveAttribute('target', '_blank');
-    await expect(gp).toHaveAttribute('rel', /noopener/);
+    await expect(page.locator('#proyectos article').getByRole('link')).toHaveCount(0);
+  });
+
+  test('grilla: 2 columnas en tablet y desktop, 1 en mobile', async ({ page }) => {
+    await page.goto('/#proyectos');
+    // Posición de layout (offset*): no la altera el transform de la animación de aparición.
+    const boxes = await page
+      .locator('#proyectos article')
+      .evaluateAll((els) => els.map((el) => ({ top: (el as HTMLElement).offsetTop, width: (el as HTMLElement).offsetWidth })));
+    const sameRow = Math.abs(boxes[0].top - boxes[1].top) < 1;
+    if (page.viewportSize()!.width >= 700) {
+      expect(sameRow).toBe(true);
+      expect(Math.abs(boxes[0].width - boxes[1].width)).toBeLessThan(1);
+    } else {
+      expect(sameRow).toBe(false);
+    }
   });
 
   test('los teléfonos con chat son decorativos (ocultos a lectores de pantalla)', async ({ page }) => {
@@ -362,7 +374,18 @@ test.describe('Stack', () => {
     await expect(group('Inteligencia Artificial').nth(-2)).toHaveText('Claude Code');
     await expect(group('Bases de datos').first()).toHaveText('PostgreSQL');
     await expect(group('Cloud e infraestructura').first()).toHaveText('AWS');
-    await expect(group('Otras tecnologías')).toHaveText(['REST APIs', 'Webhooks', 'Git', 'SOAP', 'GraphQL']);
+    await expect(group('Otras tecnologías')).toHaveText([
+      'REST APIs',
+      'Webhooks',
+      'Git',
+      'ERP (Odoo, Sperta)',
+      'Facturación electrónica AFIP/ARCA',
+      'SOAP',
+      'GraphQL',
+    ]);
+    // Los ítems agregados a los bloques no están en el carrusel.
+    expect(carousel).not.toContain('ERP (Odoo, Sperta)');
+    expect(carousel).not.toContain('Facturación electrónica AFIP/ARCA');
   });
 
   test('carrusel: avanza solo, en loop, y la copia duplicada está oculta a lectores', async ({ page }) => {
@@ -464,17 +487,28 @@ test.describe('Experiencia', () => {
     await expect(jobs).toHaveCount(5);
     await expect(jobs.locator('h3')).toHaveText([
       'Co-Founder · GP-Tech',
-      'Senior Backend Developer & Líder Técnico · E2E Travel Solutions',
-      'Magento Developer / Líder Técnico · Improntus',
-      'Core Developer · Lyracons',
+      'Senior Backend Developer & Technical Lead · E2E Travel Solutions',
+      'Magento Developer / Technical Lead · Improntus',
+      'Core Developer · Lyracons (adquirida por Valtech en 2022)',
       'Full Stack Developer (Senior) · TIJE Travel',
     ]);
-    await expect(jobs.nth(0)).toContainText('May 2026 – Actualidad');
-    await expect(jobs.nth(1)).toContainText('Nov 2023 – Nov 2026');
-    await expect(jobs.nth(4)).toContainText('Feb 2015 – Ago 2020 · 5 años y 6 meses');
-    for (const job of await jobs.all()) {
-      expect(await job.locator('ul').first().locator('li').count()).toBeGreaterThan(0);
-    }
+    await expect(jobs.nth(0)).toContainText('05/2026 – Actualidad');
+    await expect(jobs.nth(0)).toContainText('Producto propio, de requisitos a producción, en paralelo a E2E hasta 11/2026.');
+    await expect(jobs.nth(0)).not.toContainText('Proyectos propios');
+    await expect(jobs.nth(1)).toContainText('11/2023 – 11/2026 · 3 años');
+    await expect(jobs.nth(2)).toContainText('08/2022 – 11/2023 · 1 año y 3 meses');
+    await expect(jobs.nth(3)).toContainText('08/2020 – 08/2022 · 2 años');
+    await expect(jobs.nth(4)).toContainText('02/2015 – 08/2020 · 5 años y 6 meses');
+    // E2E: puntos nuevos y sin "alto volumen".
+    await expect(jobs.nth(1)).toContainText('Integración de ERP de facturación (Odoo y Sperta) vía API');
+    await expect(jobs.nth(1)).toContainText('Facturación electrónica con AFIP/ARCA mediante una API externa');
+    await expect(jobs.nth(1)).toContainText('de ~1 minuto a ~20 segundos de ejecución');
+    await expect(jobs.nth(1)).not.toContainText('alto volumen');
+    await expect(jobs.nth(1)).not.toContainText('reduciendo tiempos de respuesta');
+    // Lyracons: solo descripción, sin lista de puntos.
+    await expect(jobs.nth(3)).toContainText('La Nación (Libook) sobre Magento 2.4');
+    await expect(jobs.nth(3).locator('ul').first()).toHaveAttribute('aria-label', 'Tecnologías');
+    await expect(jobs.nth(4)).toContainText('(últimos 6 meses)');
   });
 });
 
@@ -483,6 +517,9 @@ test.describe('Contacto y footer', () => {
     await page.goto('/#contacto');
     const contact = page.locator('#contacto');
     await expect(contact.getByRole('heading', { name: '¿Hablamos?' })).toBeVisible();
+    await expect(contact).toContainText(
+      'Buenos Aires, Argentina · Remoto o híbrido · Idiomas: Español (nativo), Inglés (técnico: lectura y escritura)',
+    );
     await expect(contact.getByRole('link', { name: /^LinkedIn/ })).toHaveAttribute('href', LINKEDIN);
     // El botón de email muestra la dirección; no se repite en otro lado de la sección.
     const email = contact.getByRole('link', { name: 'fngomezsosa@gmail.com' });

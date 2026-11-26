@@ -1,5 +1,5 @@
 import { ArrowUpRight, Check } from 'lucide-react';
-import { projects, type ChatPreview, type Project } from '../../data/projects';
+import { projects, projectsCompanyNote, type ChatPreview, type Project } from '../../data/projects';
 import type { ResponsiveImage } from '../../lib/images';
 import { Button } from '../ui/Button';
 import { SectionHeading } from '../ui/SectionHeading';
@@ -108,7 +108,12 @@ export function Projects({ images }: { images: Record<string, ProjectImages> }) 
   return (
     <section id="proyectos" className="section" aria-labelledby="proyectos-title">
       <div className="container">
-        <SectionHeading id="proyectos-title" title="Proyectos destacados" subtitle="Productos reales, soluciones con IA" />
+        <SectionHeading
+          id="proyectos-title"
+          title="Proyectos destacados"
+          subtitle="Productos reales, soluciones con IA"
+          note={projectsCompanyNote}
+        />
         <div className={styles.grid}>
           {projects.map((p, i) => (
             <ProjectCard key={p.id} project={p} images={images[p.id]} index={i} />

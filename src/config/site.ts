@@ -9,9 +9,11 @@ export const site = {
   description:
     'Desarrollo soluciones digitales escalables con Python, Inteligencia Artificial y visión de negocio.',
   location: 'Buenos Aires, Argentina',
+  /** Ubicación, modalidad e idiomas (se muestra en Contacto). */
+  availability: 'Buenos Aires, Argentina · Remoto o híbrido · Idiomas: Español (nativo), Inglés (técnico: lectura y escritura)',
   seoTitle: 'Federico Gómez · Desarrollador Backend Python | IA y agentes',
   seoDescription:
-    'Desarrollador backend con más de 9 años de experiencia, los últimos 6 con Python y Django. IA aplicada, agentes, RAG y arquitecturas SaaS. Co-founder de GP-Tech.',
+    'Desarrollador backend con más de 11 años de experiencia y Python en producción desde 2020. IA aplicada, agentes, RAG y arquitecturas SaaS. Co-founder de GP-Tech.',
 } as const;
 
 export const links = {

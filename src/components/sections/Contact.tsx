@@ -1,5 +1,5 @@
 import { ArrowUpRight, Mail } from 'lucide-react';
-import { links, mailto } from '../../config/site';
+import { links, mailto, site } from '../../config/site';
 import type { ResponsiveImage } from '../../lib/images';
 import { Button } from '../ui/Button';
 import { LinkedInIcon, WhatsAppIcon } from '../ui/Icons';
@@ -15,6 +15,7 @@ export function Contact({ gptechIcon }: { gptechIcon: ResponsiveImage }) {
               ¿Hablamos?
             </h2>
             <p className={styles.text}>Estoy abierto a nuevas oportunidades, proyectos tecnológicos y colaboraciones.</p>
+            <p className={styles.text}>{site.availability}</p>
             <ul className={styles.buttons}>
               <li>
                 <Button href={links.linkedin} external variant="outline" icon={<LinkedInIcon size={20} />}>

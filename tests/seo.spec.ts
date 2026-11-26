@@ -9,7 +9,7 @@ test.describe('SEO y publicación', () => {
     const meta = (sel: string) => page.locator(sel).first().getAttribute('content');
     await expect(page).toHaveTitle('Federico Gómez · Desarrollador Backend Python | IA y agentes');
     expect(await page.locator('link[rel="canonical"]').getAttribute('href')).toBe(`${SITE}/`);
-    expect(await meta('meta[name="description"]')).toContain('más de 9 años');
+    expect(await meta('meta[name="description"]')).toContain('más de 11 años');
     expect(await meta('meta[property="og:title"]')).toBe(await page.title());
     expect(await meta('meta[property="og:image"]')).toBe(`${SITE}/og.png`);
     expect(await meta('meta[name="twitter:card"]')).toBe('summary_large_image');

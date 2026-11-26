@@ -6,7 +6,6 @@
 import type { ImageMetadata } from 'astro';
 import tupropiaLogo from '../assets/logos/tupropia-logo.png';
 import tuagenciaLogo from '../assets/logos/tuagencia-logo.png';
-import gptechIcon from '../assets/logos/gptech-icono.png';
 
 export type ProjectTheme = 'tupropia' | 'tuagencia' | 'gptech';
 
@@ -32,6 +31,9 @@ export interface Project {
   chat?: ChatPreview;
   link?: { label: string; href: string };
 }
+
+/** Línea debajo del título de la sección. */
+export const projectsCompanyNote = 'TuPropIA y TuAgencIA son productos de GP Tech';
 
 export const projects: Project[] = [
   {
@@ -86,24 +88,5 @@ export const projects: Project[] = [
         { from: 'user', text: 'Busco un auto usado' },
       ],
     },
-  },
-  {
-    id: 'gptech',
-    name: 'GP-Tech',
-    theme: 'gptech',
-    logo: gptechIcon,
-    logoAlt: 'GP-Tech',
-    logoHasName: false,
-    tagline: 'Innovación. Tecnología. Soluciones.',
-    description:
-      'Empresa tecnológica enfocada en diseñar y desarrollar productos digitales con Inteligencia Artificial, automatización y arquitecturas escalables.',
-    featuresTitle: 'Qué hacemos',
-    features: [
-      'Desarrollo de productos SaaS',
-      'Soluciones con IA',
-      'Automatización de procesos',
-      'Desarrollo de software a medida',
-    ],
-    link: { label: 'Visitar GP-Tech', href: 'https://www.gp-tech.com.ar/' },
   },
 ];

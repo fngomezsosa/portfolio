@@ -22,7 +22,7 @@ export const experience: Job[] = [
     start: '2026-05',
     end: null,
     summary:
-      'Diseño y desarrollo de TuPropIA y TuAgencIA, plataformas SaaS multitenant con roles, planes y billing. Proyectos propios, de requisitos a producción.',
+      'Diseño y desarrollo de TuPropIA y TuAgencIA, plataformas SaaS multitenant con roles, planes y billing. Producto propio, de requisitos a producción, en paralelo a E2E hasta 11/2026.',
     highlights: [
       'Agente de IA conversacional por WhatsApp: califica leads, responde consultas y agenda visitas. Las acciones del agente se procesan y validan en el servidor antes de ejecutarse.',
       'RAG implementado desde cero con pgvector y OpenAI SDK (embeddings, búsqueda semántica y generación de respuestas), sin frameworks de abstracción.',
@@ -33,14 +33,16 @@ export const experience: Job[] = [
   },
   {
     company: 'E2E Travel Solutions',
-    role: 'Senior Backend Developer & Líder Técnico',
+    role: 'Senior Backend Developer & Technical Lead',
     start: '2023-11',
     end: '2026-11',
     summary:
-      'Desarrollo backend de plataformas del sector turismo con Python y Django: integraciones de alto volumen y APIs REST con múltiples proveedores internacionales.',
+      'Desarrollo backend de plataformas del sector turismo con Python y Django: integraciones y APIs REST con múltiples proveedores internacionales.',
     highlights: [
       'Servicios e integraciones con Django y FastAPI en proyectos como SafeTravel; microservicios serverless en AWS (Lambda, API Gateway, SQS, DynamoDB).',
-      'Optimización de procesos críticos y consultas de base de datos con alto volumen de información, reduciendo tiempos de respuesta.',
+      'Integración de ERP de facturación (Odoo y Sperta) vía API: generación de facturas y recibos y obtención de los PDF para el cliente.',
+      'Facturación electrónica con AFIP/ARCA mediante una API externa, en reemplazo de la integración con Sperta.',
+      'Optimización de un proceso crítico: de ~1 minuto a ~20 segundos de ejecución.',
       'Referente técnico del equipo: arquitecturas, revisiones de código y coordinación de desarrolladores.',
       'Flujo de trabajo asistido por IA: análisis propio del incidente, contraste del plan con IA, implementación con Claude Code, revisión del código y pruebas antes de pasar a QA.',
     ],
@@ -48,7 +50,7 @@ export const experience: Job[] = [
   },
   {
     company: 'Improntus',
-    role: 'Magento Developer / Líder Técnico',
+    role: 'Magento Developer / Technical Lead',
     start: '2022-08',
     end: '2023-11',
     summary: 'Módulos custom en Magento 2 e integración frontend-backend mediante GraphQL.',
@@ -59,15 +61,13 @@ export const experience: Job[] = [
     tech: ['PHP', 'Magento 2', 'GraphQL'],
   },
   {
-    company: 'Lyracons',
+    company: 'Lyracons (adquirida por Valtech en 2022)',
     role: 'Core Developer',
     start: '2020-08',
     end: '2022-08',
-    summary: 'Arquitectura backend de un proyecto estratégico como único desarrollador Core asignado.',
-    highlights: [
-      'Ciclo completo, desde requerimientos hasta producción.',
-      'Comunicación diaria con el cliente.',
-    ],
+    summary:
+      'Desarrollé el backend de la plataforma e-commerce de La Nación (Libook) sobre Magento 2.4, con arquitectura Headless PWA y servicios GraphQL; fue el primer proyecto con GraphQL de la empresa, con contacto directo con el cliente. Fui el único desarrollador Core asignado al backend en la etapa inicial y luego coordiné a un desarrollador incorporado hasta la salida a producción.',
+    highlights: [],
     tech: ['Arquitectura backend', 'APIs'],
   },
   {
@@ -78,7 +78,7 @@ export const experience: Job[] = [
     summary:
       'Evolución de Junior a Senior en 5 años sobre plataformas web de turismo; Symfony / Doctrine, módulo de gestión y control de reservas.',
     highlights: [
-      'Microservicios en AWS Lambda con Python, API Gateway y DynamoDB.',
+      'Participé en la migración tecnológica con microservicios en AWS Lambda (Python), API Gateway y DynamoDB (últimos 6 meses).',
       'Trabajo con MongoDB y bases relacionales; integraciones REST y SOAP con proveedores externos.',
     ],
     tech: ['PHP', 'Symfony', 'Doctrine', 'Python', 'AWS Lambda', 'DynamoDB', 'MongoDB', 'SOAP'],
@@ -86,16 +86,13 @@ export const experience: Job[] = [
 ];
 
 export const experienceSummary = {
-  value: '+9 años',
+  value: '11+ años',
   label: 'de experiencia',
   text: 'Backend, integraciones y liderazgo técnico; hoy, productos propios con IA.',
 };
 
-const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-
-/** "2023-11" → "Nov 2023" */
+/** "2023-11" → "11/2023" */
 export function formatMonth(ym: string): string {
-  const [year, month] = ym.split('-').map(Number);
-  const m = months[month - 1];
-  return `${m[0].toUpperCase()}${m.slice(1)} ${year}`;
+  const [year, month] = ym.split('-');
+  return `${month}/${year}`;
 }

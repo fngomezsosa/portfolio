@@ -48,11 +48,13 @@ export function Experience({ buildDate }: { buildDate: string }) {
                   </p>
                 </header>
                 <p className={styles.jobSummary}>{job.summary}</p>
-                <ul className={styles.highlights}>
-                  {job.highlights.map((h) => (
-                    <li key={h}>{h}</li>
-                  ))}
-                </ul>
+                {job.highlights.length > 0 && (
+                  <ul className={styles.highlights}>
+                    {job.highlights.map((h) => (
+                      <li key={h}>{h}</li>
+                    ))}
+                  </ul>
+                )}
                 <ul className={styles.tech} aria-label="Tecnologías">
                   {job.tech.map((t) => (
                     <li key={t}>{t}</li>
